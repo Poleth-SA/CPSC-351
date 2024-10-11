@@ -5,7 +5,7 @@
 #define SIZE (sizeof(list)/sizeof(*list))
 
 // The list of integers to be sorted
-//Got below from hints
+//from hints
 int list[] = {7, 12, 19, 3, 18, 4, 2, -5, 6, 15, 8};
 int result[SIZE] = {0};
 
@@ -75,7 +75,6 @@ void* mergeThread(void* params) {
 int main() {
     pthread_t sortThread1, sortThread2, mergeThread1;
     
-    //original array
     printf("Original array: ");
     for (int i = 0; i < SIZE; i++) {
         printf("%d ", list[i]);
@@ -96,11 +95,10 @@ int main() {
     pthread_create(&sortThread1, NULL, sortThread, paramsLeft);
     pthread_create(&sortThread2, NULL, sortThread, paramsRight);
     
-    // Wait for sorting threads to complete
+    //Wait for sorting threads to complete
     pthread_join(sortThread1, NULL);
     pthread_join(sortThread2, NULL);
     
-    // Print subarrays after sorting
     printf("Left subarray after sorting: ");
     for (int i = 0; i < paramsLeft->size; i++) {
         printf("%d ", paramsLeft->subArray[i]);
@@ -113,25 +111,23 @@ int main() {
     }
     printf("\n");
     
-    // Create parameters for merge thread
+    //Create parameters for merge thread
     MergingThreadParameters* paramsMerge = malloc(sizeof(MergingThreadParameters));
     paramsMerge->left = *paramsLeft;
     paramsMerge->right = *paramsRight;
     
-    // Create and start merge thread
+    //Create and start merge thread
     pthread_create(&mergeThread1, NULL, mergeThread, paramsMerge);
     
-    // Wait for merge thread to complete
+    //Wait for merge thread to complete
     pthread_join(mergeThread1, NULL);
     
-    // Print final sorted array
     printf("Final sorted array: ");
     for (int i = 0; i < SIZE; i++) {
         printf("%d ", result[i]);
     }
     printf("\n");
     
-    // Free allocated memory
     free(paramsLeft);
     free(paramsRight);
     free(paramsMerge);
