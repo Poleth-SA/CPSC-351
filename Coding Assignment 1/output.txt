@@ -1,0 +1,25 @@
+Welcome to myShell
+==> dir
+ Volume in drive C is OS
+ Volume Serial Number is 6E3F-62AC
+
+ Directory of C:\Users\rodri\Desktop\cs351\myShell\x64\Release
+
+09/26/2024  06:23 PM    <DIR>          .
+09/26/2024  06:10 PM    <DIR>          ..
+09/26/2024  06:13 PM            19,968 myShell.exe
+09/26/2024  06:13 PM           937,984 myShell.pdb
+09/26/2024  06:23 PM                24 output.txt
+               3 File(s)        957,976 bytes
+               2 Dir(s)  874,501,619,712 bytes free
+==> ping 137.151.175.115
+
+Pinging 137.151.175.115 with 32 bytes of data:
+Request timed out.
+Request timed out.
+Request timed out.
+Request timed out.
+
+Ping statistics for 137.151.175.115:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+==> exit
