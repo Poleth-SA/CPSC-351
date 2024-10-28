@@ -1,3 +1,6 @@
+/// Group 6
+/// Group Members: Alexia Rodriguez, Christian Beshara, Jacqueline Villasenor, Poleth Salmeron Acosta
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
