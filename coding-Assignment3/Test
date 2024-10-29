@@ -1,0 +1,83 @@
+#include <iostream>
+#include <cstdlib>
+#include <pthread.h>
+
+// Define the structure for a stack node
+struct StackNode {
+    int data;
+    StackNode* next;
+};
+
+// Initialize a mutex for thread safety
+pthread_mutex_t stack_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+// Push function to add an item to the stack
+void push(int value, StackNode** top) {
+    pthread_mutex_lock(&stack_mutex);  // Lock the mutex before modifying the stack
+
+    StackNode* newNode = new StackNode;  // Create a new stack node
+    newNode->data = value;                // Set the value of the new node
+    newNode->next = *top;                 // Point new node to the current top
+    *top = newNode;                       // Update top to the new node
+
+    pthread_mutex_unlock(&stack_mutex);   // Unlock the mutex after the operation
+}
+
+// Pop function to remove an item from the stack
+int pop(StackNode** top) {
+    pthread_mutex_lock(&stack_mutex);  // Lock the mutex before modifying the stack
+
+    if (*top == nullptr) {
+        pthread_mutex_unlock(&stack_mutex);  // Unlock if the stack is empty
+        return -1; // Indicate stack is empty
+    }
+
+    StackNode* temp = *top;           // Temporarily hold the top node
+    int poppedValue = temp->data;     // Get the value to return
+    *top = (*top)->next;              // Update top to the next node
+    delete temp;                      // Free the memory of the popped node
+
+    pthread_mutex_unlock(&stack_mutex); // Unlock the mutex after the operation
+    return poppedValue;               // Return the popped value
+}
+
+// Thread function that intermixes push and pop operations
+void* testStack(void* arg) {
+    StackNode** top = (StackNode**)arg; // Get the stack pointer from the argument
+
+    for (int i = 0; i < 500; ++i) {
+        push(rand() % 100, top); // Push a random value
+        push(rand() % 100, top); // Push another random value
+        push(rand() % 100, top); // Push yet another random value
+
+        pop(top); // Pop an item from the stack
+        pop(top); // Pop another item
+        pop(top); // Pop yet another item
+    }
+    return nullptr; // Exit the thread
+}
+
+int main() {
+    StackNode* top = nullptr;       // Initialize the stack top to nullptr
+    pthread_t threads[200];         // Array to hold thread identifiers
+
+    // Create 200 threads
+    for (int i = 0; i < 200; ++i) {
+        pthread_create(&threads[i], nullptr, testStack, (void*)&top);
+    }
+
+    // Join all threads to ensure they complete before proceeding
+    for (int i = 0; i < 200; ++i) {
+        pthread_join(threads[i], nullptr);
+    }
+
+    // Clean up: pop all remaining nodes from the stack
+    while (top != nullptr) {
+        pop(&top);
+    }
+
+    // Destroy the mutex to free resources
+    pthread_mutex_destroy(&stack_mutex);
+
+    return 0; // Exit the program
+}
